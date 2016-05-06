@@ -42,7 +42,9 @@ public class WLOsbStatsMBeanRegistrar {
 	public void register() throws NamingException, MalformedObjectNameException, InstanceAlreadyExistsException, MBeanRegistrationException, NotCompliantMBeanException {
 		InitialContext ctx = new InitialContext(); 
 		MBeanServer mbs = (MBeanServer) ctx.lookup(RUNTIME_MBEAN_SERVER_JNDI_KEY); 
+		
 		WLOsbStats mbean = new WLOsbStats();
+		
 		ObjectName mbeanObjName = new ObjectName(WL_OSB_STATS_MBEAN_NAME);
 		mbs.registerMBean(mbean, mbeanObjName);
 		ctx.close();

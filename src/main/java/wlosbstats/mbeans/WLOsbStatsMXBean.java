@@ -14,6 +14,8 @@
 //POSSIBILITY OF SUCH DAMAGE.
 package wlosbstats.mbeans;
 
+import java.util.Set;
+
 /**
  * MBean exposing statistics for the JVM running this WebLogic
  * Server instances. Provides read-only attributes for useful JVM usages statistics.
@@ -22,8 +24,38 @@ package wlosbstats.mbeans;
  */
 public interface WLOsbStatsMXBean {
 	
-	public double getHeapMemoryInit();
-	public double getHeapMemoryUsed();
-	public double getHeapMemoryCommitted();
-	public double getHeapMemoryMax();
+	// Element to process
+	//public void setElementName(String elementName);
+	
+	// "Count" property for the elementName defined from setElementName method
+	//public double getCount();
+	
+// "Count" property for a specific elementName
+public double getCount(String elementName);
+
+// "Min" property for a specific elementName
+public double getMin(String elementName);
+
+// "Max" property for a specific elementName
+public double getMax(String elementName);
+
+// "Avg" property for a specific elementName
+public double getAvg(String elementName);
+
+// "Sum" property for a specific elementName
+public double getSum(String elementName);
+
+	//public Set<String> getElementForOsbType(String type);
+	public Set<String> getProxyServiceList();
+	public Set<String> getBusinessServiceList();
+	
+	// ObjectName shouldn't bring any added value ...
+	//public Set<ObjectName> getProxyServiceMetricsObjectName();
+	//public Set<ObjectName> getBusinessProxyServiceMetricsObjectName();
+	
+	// Probably better to have get method for each attribute instead of a big method returning all the metric as key/value
+	//public Map<String, String> getProxyServiceMetrics();
+	//public Map<String, String> getBusinessProxyServiceMetrics();
+	
+	
 }

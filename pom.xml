@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>wljvmstats</groupId>
-  <artifactId>wljvmstats</artifactId>
+  <groupId>wlosbstats</groupId>
+  <artifactId>wlosbstats</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>war</packaging>
-  <name>wljvmstats</name>
+  <name>wlosbstats</name>
   <parent>
     <groupId>com.oracle.weblogic.archetype</groupId>
     <artifactId>wls-common</artifactId>
@@ -74,10 +74,45 @@
       <artifactId>jersey-multipart</artifactId>
       <version>1.8</version>
     </dependency>
+    
+    <!-- ********************************************* -->
+    <!-- OSB library -->
+    <dependency>
+      <groupId>com.oracle.weblogic</groupId>
+      <artifactId>servicebus</artifactId>
+      <version>${weblogic.server.merged.version}</version>
+      <scope>provided</scope>
+    </dependency>
+        
+    <dependency>
+      <groupId>com.oracle.weblogic</groupId>
+      <artifactId>servicebus.kernel</artifactId>
+      <version>${weblogic.server.merged.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>com.oracle.weblogic</groupId>
+      <artifactId>servicebus.configfwk</artifactId>
+      <version>${weblogic.server.merged.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <!-- ********************************************* -->
+    
+    <!-- ********************************************* -->
+    <!-- SOA-BPM library  -->
+    <dependency>
+      <groupId>com.oracle.weblogic</groupId>
+      <artifactId>fabric.runtime</artifactId>
+      <version>${weblogic.server.merged.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <!-- ********************************************* -->
+    
   </dependencies>
 
   <build>
-    <finalName>wljvmstats</finalName>
+    <finalName>wlosbstats</finalName>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

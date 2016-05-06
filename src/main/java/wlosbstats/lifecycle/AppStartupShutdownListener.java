@@ -52,7 +52,6 @@ public class AppStartupShutdownListener implements ServletContextListener {
 		} 
 	}
 
-	
 	// Members
 	private WLOsbStatsMBeanRegistrar wlOsbStatsMBeanRegistrar = new WLOsbStatsMBeanRegistrar();
 }
