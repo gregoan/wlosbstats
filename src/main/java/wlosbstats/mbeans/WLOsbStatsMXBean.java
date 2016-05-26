@@ -14,7 +14,9 @@
 //POSSIBILITY OF SUCH DAMAGE.
 package wlosbstats.mbeans;
 
+import java.util.Map;
 import java.util.Set;
+
 
 /**
  * MBean exposing statistics for the JVM running this WebLogic
@@ -23,39 +25,31 @@ import java.util.Set;
  * @see javax.management.MXBean
  */
 public interface WLOsbStatsMXBean {
-	
-	// Element to process
-	//public void setElementName(String elementName);
-	
-	// "Count" property for the elementName defined from setElementName method
-	//public double getCount();
-	
-// "Count" property for a specific elementName
-public double getCount(String elementName);
 
-// "Min" property for a specific elementName
-public double getMin(String elementName);
-
-// "Max" property for a specific elementName
-public double getMax(String elementName);
-
-// "Avg" property for a specific elementName
-public double getAvg(String elementName);
-
-// "Sum" property for a specific elementName
-public double getSum(String elementName);
-
-	//public Set<String> getElementForOsbType(String type);
-	public Set<String> getProxyServiceList();
-	public Set<String> getBusinessServiceList();
+	// Even if Set is used, it will be returned as String[] in client side
+	//public String[] getServiceList(String osbResourceType);
+	//public Set<String> getServiceListSet(String osbResourceType);
 	
-	// ObjectName shouldn't bring any added value ...
-	//public Set<ObjectName> getProxyServiceMetricsObjectName();
-	//public Set<ObjectName> getBusinessProxyServiceMetricsObjectName();
+	// Problem to read the datas in the client (TabularData : http://docs.oracle.com/javase/6/docs/api/javax/management/MXBean.html)
+//public Map<String, Map<String, Map<String, Double>>> getServiceStatistics(String serverName, String osbResourceType, String resourceType, String statisticType);
+//public Map<String, Map<String, Map<String, Double>>> getServiceStatistics(String serverName, String osbResourceType, String resourceType);
+	public Map<String, Map<String, Map<String, Double>>> getServiceStatistics(String osbResourceType, String resourceType, String statisticType);
+	public Map<String, Map<String, Map<String, Double>>> getServiceStatistics(String osbResourceType, String resourceType);
 	
-	// Probably better to have get method for each attribute instead of a big method returning all the metric as key/value
-	//public Map<String, String> getProxyServiceMetrics();
-	//public Map<String, String> getBusinessProxyServiceMetrics();
+//public void collectServiceStatistics(String serverName, String osbResourceType, String resourceType, String statisticType);
+//public void collectServiceStatistics(String serverName, String osbResourceType, String resourceType);
+
+public void collectServiceStatistics(String osbResourceType, String resourceType, String statisticType);
+public void collectServiceStatistics(String osbResourceType, String resourceType);
+		
+	// Was in DH but it seems the MBean is updating the HashMap in TabularData (see TabularDataSupport) object ...
+	//public Set<String> getOsbServiceList(Map<String, Map<String, Map<String, Double>>> statistics);
+	//public Set<String> getOsbResourceStatisticList(Map<String, Map<String, Map<String, Double>>> statistics, String serviceName);
+	//public Set<String> getOsbStatisticList(Map<String, Map<String, Map<String, Double>>> statistics, String serviceName, String resourceStatisticName);
+	//public double getValueForOsbStatistic(Map<String, Map<String, Map<String, Double>>> statistics, String serviceName, String resourceStatisticName, String statisticName);
 	
-	
+	public Set<String> getOsbServiceList();
+	public Set<String> getOsbResourceStatisticList(String serviceName);
+	public Set<String> getOsbStatisticList(String serviceName, String resourceStatisticName);
+	public double getValueForOsbStatistic(String serviceName, String resourceStatisticName, String statisticName);
 }

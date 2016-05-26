@@ -40,12 +40,13 @@ public class WLOsbStatsMBeanRegistrar {
 	 * @throws NotCompliantMBeanException Indicates that the MBean is not constructed correctly
 	 */
 	public void register() throws NamingException, MalformedObjectNameException, InstanceAlreadyExistsException, MBeanRegistrationException, NotCompliantMBeanException {
-		InitialContext ctx = new InitialContext(); 
-		MBeanServer mbs = (MBeanServer) ctx.lookup(RUNTIME_MBEAN_SERVER_JNDI_KEY); 
+		
+		InitialContext ctx = new InitialContext();
+		MBeanServer mbs = (MBeanServer) ctx.lookup(RUNTIME_MBEAN_SERVER_JNDI_KEY);
 		
 		WLOsbStats mbean = new WLOsbStats();
-		
 		ObjectName mbeanObjName = new ObjectName(WL_OSB_STATS_MBEAN_NAME);
+				
 		mbs.registerMBean(mbean, mbeanObjName);
 		ctx.close();
 	}
@@ -59,6 +60,7 @@ public class WLOsbStatsMBeanRegistrar {
 	 * @throws MBeanRegistrationException Indicates general problem occurred when trying to de-register MBean
 	 */
 	public void deregister() throws NamingException, MBeanRegistrationException, InstanceNotFoundException, MalformedObjectNameException {
+		
 		InitialContext ctx = new InitialContext(); 
 		MBeanServer mbs = (MBeanServer) ctx.lookup(RUNTIME_MBEAN_SERVER_JNDI_KEY);
 		ObjectName mbeanObjName = new ObjectName(WL_OSB_STATS_MBEAN_NAME);
@@ -66,7 +68,6 @@ public class WLOsbStatsMBeanRegistrar {
 		if ((mbeanObjName != null) && (mbs.isRegistered(mbeanObjName))) { 
 			mbs.unregisterMBean(mbeanObjName);
 		}
-
 		ctx.close();
 	}
 

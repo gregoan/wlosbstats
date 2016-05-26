@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
+    <display-name>OSB extension for DomainHealth application</display-name>
+    
+    <listener>
+		<listener-class>wlosbstats.lifecycle.AppStartupShutdownListener</listener-class>
+	</listener>
+	
+	<!--
+    <servlet>
+        <servlet-name>AppStartStopListener</servlet-name>
+        <servlet-class>wlosbstats.lifecycle.AppStartStopListener</servlet-class>
+        <load-on-startup>0</load-on-startup>
+        <run-as>
+            <role-name>SystemAdministrator</role-name>
+        </run-as>
+    </servlet>
+
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
+
+    <resource-ref>
+        <res-ref-name>DomainHealthOSB_IndividualServerStatCapturerWorkMngr</res-ref-name>
+        <res-type>commonj.work.WorkManager</res-type>
+        <res-auth>Container</res-auth>
+        <res-sharing-scope>Shareable</res-sharing-scope>
+    </resource-ref>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>AllResources</web-resource-name>
+            <url-pattern>/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>SystemAdministrator</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>NONE</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+
+    <login-config>
+        <auth-method>BASIC</auth-method>
+        <realm-name>DomainHealth_OSB</realm-name>
+    </login-config>
+
+    <security-role>
+        <role-name>SystemAdministrator</role-name>
+    </security-role>
+    
+    <servlet>
+        <display-name>DH_OSB</display-name>
+        <servlet-name>DH_OSB_App</servlet-name>
+        <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
+    </servlet>
+    
+    <servlet-mapping>
+        <servlet-name>DH_OSB_App</servlet-name>
+        <url-pattern>/rest/*</url-pattern>
+    </servlet-mapping>
+    -->
+
+</web-app>

@@ -27,6 +27,8 @@ import javax.management.ObjectInstance;
 import javax.management.ObjectName;
 import javax.management.remote.JMXConnector;
 
+import domainhealth.core.env.AppLog;
+
 /**
  * Creates an WebLogic JMX Connection to WebLogic's Domain Runtime Service 
  * Tree. See description of WebLogicMBeanConnection for more info. Used 
@@ -51,6 +53,9 @@ public class DomainRuntimeServiceMBeanConnection extends WebLogicMBeanConnection
 	 */
 	public DomainRuntimeServiceMBeanConnection(String protocol, String host, int port, String username, String password) throws WebLogicMBeanException {
 		super(protocol, host, port, username, password, DOMAIN_RUNTIME_SERVICE_NAME);
+		
+AppLog.getLogger().notice("DomainRuntimeServiceMBeanConnection(String protocol, String host, int port, String username, String password)");
+		
 	}
 
 	/**
@@ -63,6 +68,8 @@ public class DomainRuntimeServiceMBeanConnection extends WebLogicMBeanConnection
 	 */
 	public DomainRuntimeServiceMBeanConnection() throws WebLogicMBeanException {
 		super(DOMAIN_RUNTIME_SERVICE_NAME);
+		
+AppLog.getLogger().notice("DomainRuntimeServiceMBeanConnection() - [" + DOMAIN_RUNTIME_SERVICE_NAME + "]");
 	}
 
 	/**

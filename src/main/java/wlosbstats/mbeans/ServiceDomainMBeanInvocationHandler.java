@@ -6,9 +6,9 @@ import java.lang.reflect.Method;
 import javax.management.MBeanServerConnection;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
-import javax.management.remote.JMXConnector;
 
 import weblogic.management.jmx.MBeanServerInvocationHandler;
+import wlosbstats.util.AppLog;
 
 import com.bea.wli.monitoring.ServiceDomainMBean;
 
@@ -16,98 +16,52 @@ import com.bea.wli.monitoring.ServiceDomainMBean;
  * Invocation handler class for ServiceDomainMBean class.
  */
 public class ServiceDomainMBeanInvocationHandler implements InvocationHandler {
-  
-	/*
-	private String jndiURL = "weblogic.management.mbeanservers.domainruntime";
-	
-	private String protocol = "t3";
-	private String hostname = "";
-	private int port = 0;
-	private String jndiRoot = "/jndi/";
 
-	private String username = "";
-	private String password = "";
-	*/
-	
-	private JMXConnector jmxConnector = null;
 	private Object actualMBean = null;
-	
-	//
-	//private MBeanServerConnection conn;
-	//
+	private MBeanServerConnection conn;
 
 	/**
 	 * 
-	 * @param hostName
-	 * @param port
-	 * @param userName
-	 * @param password
+	 * @param conn
 	 */
-/*
-	public ServiceDomainMBeanInvocationHandler(String hostName, int port, String userName, String password) {
-		this.hostname = hostName;
-		this.port = port;
-		this.username = userName;
-		this.password = password;
+	public ServiceDomainMBeanInvocationHandler(MBeanServerConnection conn) {
+		this.conn = conn;				
 	}
-*/
+
 	/**
+	 * Invokes specified method with specified params on specified object.
 	 * 
-	 * @param jmxConnector
+	 * @param proxy
+	 * @param method
+	 * @param args
+	 * @return
+	 * @throws Throwable
 	 */
-	public ServiceDomainMBeanInvocationHandler(JMXConnector jmxConnector) {
-		this.jmxConnector = jmxConnector;
-	}
-
-	/**
-	 * Gets JMX connection
-	 * 
-	 * @return JMX connection
-	 * @throws IOException
-	 * @throws MalformedURLException
-	 */
-/*
-	public JMXConnector initConnection() throws IOException, MalformedURLException {
-		JMXServiceURL serviceURL = new JMXServiceURL(protocol, hostname, port, jndiRoot + jndiURL);
-		Hashtable<String, String> h = new Hashtable<String, String>();
-
-		if (username != null)
-			h.put(Context.SECURITY_PRINCIPAL, username);
-		if (password != null)
-			h.put(Context.SECURITY_CREDENTIALS, password);
-
-		h.put(JMXConnectorFactory.PROTOCOL_PROVIDER_PACKAGES, "weblogic.management.remote");
-		return JMXConnectorFactory.connect(serviceURL, h);
-	}
-*/
-
-	/**
-	  * Invokes specified method with specified params on specified
-	  * object.
-	  * @param proxy
-	  * @param method
-	  * @param args
-	  * @return
-	  * @throws Throwable
-	  */
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-     try {
-/*
-          if (jmxConnector == null) {
-               jmxConnector = initConnection();
-          }
-*/        
-          if (actualMBean == null) {
-        	  actualMBean = findServiceDomain(jmxConnector.getMBeanServerConnection());
-           }
-          
-          Object returnValue = method.invoke(actualMBean, args);
-          return returnValue;
-     }
-     catch (Exception e) {
-         throw e;
-     }
-}
+		try {
+			if (actualMBean == null) {
+				actualMBean = findServiceDomain(conn);
+			}
+			
+			if(actualMBean == null) {
+				String errorMessage = "ServiceDomainMBeanInvocationHandler::invoke() - actualMBean is null - Something weird happened ...";
+				AppLog.getLogger().error(errorMessage);
+				throw new Exception(errorMessage);
+			}
+			
+			Object returnValue = null;
+			//Object returnValue = method.invoke(actualMBean, args);
+			try {
+				returnValue = method.invoke(actualMBean, args);
+			} catch (Exception ex) {}
+			
+			return returnValue;
+		} catch (Exception ex) {
+			
+			AppLog.getLogger().error("Error during execution of invoke method - The message is [" + ex.getMessage() + "]");
+			throw ex;
+		}
+	}
 
 	/**
 	 * Finds the specified MBean object
@@ -125,12 +79,13 @@ public class ServiceDomainMBeanInvocationHandler implements InvocationHandler {
 	public Object findServiceDomain(MBeanServerConnection connection) {
 		ServiceDomainMBean serviceDomainbean = null;
 		try {
-			ObjectName on = new ObjectName(ServiceDomainMBean.OBJECT_NAME);
+			ObjectName on = new ObjectName(ServiceDomainMBean.OBJECT_NAME);			
 			serviceDomainbean = (ServiceDomainMBean) MBeanServerInvocationHandler.newProxyInstance(connection, on);
-		} catch (MalformedObjectNameException e) {
-			e.printStackTrace();
+		} catch (MalformedObjectNameException ex) {
+			AppLog.getLogger().error("Problem during execution of findServiceDomain() method");
+			//ex.printStackTrace();
 			return null;
 		}
 		return serviceDomainbean;
-	}	
+	}
 }

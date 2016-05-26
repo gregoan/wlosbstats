@@ -1,6 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
-	<listener>
-		<listener-class>wlosbstats.lifecycle.AppStartupShutdownListener</listener-class>
-	</listener>
+    
+    <display-name>OSB extension for DomainHealth application</display-name>
+    
+	<!--
+	RUN-AS is available only for Servlet
+	This directive allow JNDI lookup without to provide username/password
+	 -->
+	<servlet>
+        <servlet-name>AppStartStopListener</servlet-name>
+        <servlet-class>wlosbstats.lifecycle.AppStartStopListener</servlet-class>
+        <load-on-startup>0</load-on-startup>
+        <run-as>
+            <role-name>SystemAdministrator</role-name>
+        </run-as>
+    </servlet>
+    
+    <security-role>
+        <role-name>SystemAdministrator</role-name>
+    </security-role>
+    
 </web-app>
