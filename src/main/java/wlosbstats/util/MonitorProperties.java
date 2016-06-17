@@ -159,6 +159,7 @@ public class MonitorProperties {
 		// STATUS
 		// ------
 		statusStatistics.add(OSB_STATUS_PROPERTY);
+		statusStatistics.add(OSB_URI_OFFLINE_COUNT_PROPERTY);
 		// -----------------------------------------------------------------
 		
 		OSB_STATISTIC_TYPE_TREE.put(OSB_STATISTIC_TYPE_COUNT, countStatistics);

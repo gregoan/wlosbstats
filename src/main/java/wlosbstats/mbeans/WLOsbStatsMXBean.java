@@ -31,16 +31,16 @@ public interface WLOsbStatsMXBean {
 	//public Set<String> getServiceListSet(String osbResourceType);
 	
 	// Problem to read the datas in the client (TabularData : http://docs.oracle.com/javase/6/docs/api/javax/management/MXBean.html)
-//public Map<String, Map<String, Map<String, Double>>> getServiceStatistics(String serverName, String osbResourceType, String resourceType, String statisticType);
-//public Map<String, Map<String, Map<String, Double>>> getServiceStatistics(String serverName, String osbResourceType, String resourceType);
-	public Map<String, Map<String, Map<String, Double>>> getServiceStatistics(String osbResourceType, String resourceType, String statisticType);
-	public Map<String, Map<String, Map<String, Double>>> getServiceStatistics(String osbResourceType, String resourceType);
+	public Map<String, Map<String, Map<String, Double>>> getServiceStatistics(String serverName, String osbResourceType, String resourceType, String statisticType);
+	public Map<String, Map<String, Map<String, Double>>> getServiceStatistics(String serverName, String osbResourceType, String resourceType);
+	//	public Map<String, Map<String, Map<String, Double>>> getServiceStatistics(String osbResourceType, String resourceType, String statisticType);
+	//	public Map<String, Map<String, Map<String, Double>>> getServiceStatistics(String osbResourceType, String resourceType);
 	
-//public void collectServiceStatistics(String serverName, String osbResourceType, String resourceType, String statisticType);
-//public void collectServiceStatistics(String serverName, String osbResourceType, String resourceType);
+	public void collectServiceStatistics(String serverName, String osbResourceType, String resourceType, String statisticType);
+	public void collectServiceStatistics(String serverName, String osbResourceType, String resourceType);
 
-public void collectServiceStatistics(String osbResourceType, String resourceType, String statisticType);
-public void collectServiceStatistics(String osbResourceType, String resourceType);
+	//public void collectServiceStatistics(String osbResourceType, String resourceType, String statisticType);
+	//public void collectServiceStatistics(String osbResourceType, String resourceType);
 		
 	// Was in DH but it seems the MBean is updating the HashMap in TabularData (see TabularDataSupport) object ...
 	//public Set<String> getOsbServiceList(Map<String, Map<String, Map<String, Double>>> statistics);

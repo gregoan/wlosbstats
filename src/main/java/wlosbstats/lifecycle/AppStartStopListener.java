@@ -34,7 +34,6 @@ import wlosbstats.util.AppLog;
 public class AppStartStopListener extends GenericServlet {
 	
 	// Members
-	//private RetrieverBackgroundService retrieverBackgroundService = null;
 	//private WLOsbStatsMBeanRegistrar wlOsbStatsMBeanRegistrar = new WLOsbStatsMBeanRegistrar();
 	private WLOsbStatsMBeanRegistrar wlOsbStatsMBeanRegistrar = null;
 	
@@ -67,11 +66,6 @@ public class AppStartStopListener extends GenericServlet {
 
 		AppLog.getLogger().notice("Starting OSB extention for DomainHealth application");
 
-		/*
-		retrieverBackgroundService = new RetrieverBackgroundService();
-		retrieverBackgroundService.startup();
-		*/
-		
 		try {
 			wlOsbStatsMBeanRegistrar = new WLOsbStatsMBeanRegistrar();
 			wlOsbStatsMBeanRegistrar.register();
@@ -89,7 +83,6 @@ public class AppStartStopListener extends GenericServlet {
 	public void destroy() {
 		
 		AppLog.getLogger().notice("Stopping OSB extention for DomainHealth application");
-		//retrieverBackgroundService.shutdown();
 		
 		try {
 			if(wlOsbStatsMBeanRegistrar != null) wlOsbStatsMBeanRegistrar.deregister();

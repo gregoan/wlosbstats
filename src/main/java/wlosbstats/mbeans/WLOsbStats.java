@@ -49,11 +49,7 @@ import com.bea.wli.monitoring.StatisticType;
 import com.bea.wli.monitoring.StatisticValue;
 
 /**
- * Implementation of the MBean exposing O.S/machine statistics for the machine
- * hosting this WebLogic Server instances. Provides read-only attributes for 
- * useful CPU, Memory and Network related usages statistics.Use SIGAR JNI/C 
- * libraries under the covers (http://support.hyperic.com/display/SIGAR/Home) 
- * to retrieve specific statistics from host operating system.
+ * Implementation of the MBean exposing OSB metrics
  *  
  * @see javax.management.MXBean
  */
@@ -257,8 +253,9 @@ public class WLOsbStats implements WLOsbStatsMXBean, MBeanRegistration {
 		// Check if the MBean is instantiated each time of kept in memory for better performance
 		// -> Need to know how the data should be retrieved
 		if(!initServiceDomainMBean()) {
+			//throw new IllegalStateException ("Unable to create WLOsbStats object");
+			
 			String errorMessage = "Unable to create WLOsbStats object";
-			//throw new IllegalStateException(errorMessage);
 			AppLog.getLogger().error(errorMessage);
 		}
 	}
@@ -362,10 +359,10 @@ public class WLOsbStats implements WLOsbStatsMXBean, MBeanRegistration {
 	 * @param resourceType
 	 * @param statisticType
 	 */
-	//public void collectServiceStatistics(String serverName, String osbResourceType, String resourceType, String statisticType) {
-	public void collectServiceStatistics(String osbResourceType, String resourceType, String statisticType) {
-		//this.statistics = getServiceStatistics(serverName, osbResourceType, resourceType, statisticType);		
-		this.statistics = getServiceStatistics(osbResourceType, resourceType, statisticType);
+	public void collectServiceStatistics(String serverName, String osbResourceType, String resourceType, String statisticType) {
+	//public void collectServiceStatistics(String osbResourceType, String resourceType, String statisticType) {
+		this.statistics = getServiceStatistics(serverName, osbResourceType, resourceType, statisticType);		
+		//this.statistics = getServiceStatistics(osbResourceType, resourceType, statisticType);
 	}
 	
 	/**
@@ -374,11 +371,11 @@ public class WLOsbStats implements WLOsbStatsMXBean, MBeanRegistration {
 	 * @param osbResourceType
 	 * @param resourceType
 	 */
-	//public void collectServiceStatistics(String serverName, String osbResourceType, String resourceType) {
-	public void collectServiceStatistics(String osbResourceType, String resourceType) {
+	public void collectServiceStatistics(String serverName, String osbResourceType, String resourceType) {
+	//public void collectServiceStatistics(String osbResourceType, String resourceType) {
 				
-		//this.statistics = getServiceStatistics(serverName, osbResourceType, resourceType);
-		this.statistics = getServiceStatistics(osbResourceType, resourceType);
+		this.statistics = getServiceStatistics(serverName, osbResourceType, resourceType);
+		//this.statistics = getServiceStatistics(osbResourceType, resourceType);
 	}
 	
 	/**
@@ -388,12 +385,11 @@ public class WLOsbStats implements WLOsbStatsMXBean, MBeanRegistration {
 	 * @param resourceType
 	 * @return
 	 */
-	//public Map<String, Map<String, Map<String, Double>>> getServiceStatistics(String serverName, String osbResourceType, String resourceType) {
-	public Map<String, Map<String, Map<String, Double>>> getServiceStatistics(String osbResourceType, String resourceType) {
+	public Map<String, Map<String, Map<String, Double>>> getServiceStatistics(String serverName, String osbResourceType, String resourceType) {
+	//public Map<String, Map<String, Map<String, Double>>> getServiceStatistics(String osbResourceType, String resourceType) {
 		
-		//return getServiceStatistics(serverName, osbResourceType, resourceType, null);
-		return getServiceStatistics(osbResourceType, resourceType, null);
-		
+		return getServiceStatistics(serverName, osbResourceType, resourceType, null);
+		//return getServiceStatistics(osbResourceType, resourceType, null);	
 	}
 	
 	/**
@@ -404,8 +400,8 @@ public class WLOsbStats implements WLOsbStatsMXBean, MBeanRegistration {
 	 * @param statisticTypeString
 	 * @return
 	 */
-	//public Map<String, Map<String, Map<String, Double>>> getServiceStatistics(String serverName, String osbResourceType, String resourceTypeString, String statisticTypeString) {
-	public Map<String, Map<String, Map<String, Double>>> getServiceStatistics(String osbResourceType, String resourceTypeString, String statisticTypeString) {
+	public Map<String, Map<String, Map<String, Double>>> getServiceStatistics(String serverName, String osbResourceType, String resourceTypeString, String statisticTypeString) {
+	//public Map<String, Map<String, Map<String, Double>>> getServiceStatistics(String osbResourceType, String resourceTypeString, String statisticTypeString) {
 		
 		Map<String, Map<String, Map<String, Double>>> statistics = new LinkedHashMap<>();
 		StatisticType statisticType = null;
@@ -444,8 +440,8 @@ public class WLOsbStats implements WLOsbStatsMXBean, MBeanRegistration {
     		
 		// -----------------------------------------------------
 		// Get the statistics    		
-		//HashMap<Ref, ServiceResourceStatistic> statsMap = getDetailsForResourceType(serverName, osbResourceType, resourceType);
-    	HashMap<Ref, ServiceResourceStatistic> statsMap = getDetailsForResourceType(osbResourceType, resourceType);
+		HashMap<Ref, ServiceResourceStatistic> statsMap = getDetailsForResourceType(serverName, osbResourceType, resourceType);
+    	//HashMap<Ref, ServiceResourceStatistic> statsMap = getDetailsForResourceType(osbResourceType, resourceType);
     	// -----------------------------------------------------
     	
     	// -----------------------------------------------------
@@ -454,14 +450,9 @@ public class WLOsbStats implements WLOsbStatsMXBean, MBeanRegistration {
     		
     		if(statisticType != null) statistics = processStatistics(statsMap, statisticType);
     		else statistics = processStatistics(statsMap);
+    		
     		return statistics;
     	}
-/*
-else {
-	//AppLog.getLogger().notice("getServiceStatistics() - statsMap is null or empty ... for server [" + serverName + "]");
-	AppLog.getLogger().notice("getServiceStatistics() - statsMap is null or empty ...");
-}
-*/
     	// -----------------------------------------------------
     	
 		return statistics;
@@ -486,15 +477,15 @@ else {
 	 * @param resourceType
 	 * @return
 	 */
-	//private HashMap<Ref, ServiceResourceStatistic> getDetailsForResourceType(String serverName, String osbResourceType, ResourceType resourceType) {
-	private HashMap<Ref, ServiceResourceStatistic> getDetailsForResourceType(String osbResourceType, ResourceType resourceType) {
+	private HashMap<Ref, ServiceResourceStatistic> getDetailsForResourceType(String serverName, String osbResourceType, ResourceType resourceType) {
+	//private HashMap<Ref, ServiceResourceStatistic> getDetailsForResourceType(String osbResourceType, ResourceType resourceType) {
 
 		try {
 
 			Ref[] references = getRefForOsbType(osbResourceType);
 
 			if (references != null && references.length > 0) {
-				AppLog.getLogger().debug("Found [" + references.length + "] elements of type [" + osbResourceType + "]");
+				//AppLog.getLogger().debug("Found [" + references.length + "] elements of type [" + osbResourceType + "]");
 
 				// Bitwise map for desired resource types.
 				int typeFlag = 0;
@@ -503,8 +494,9 @@ else {
 				// Get cluster-level statistics.
 				try {
 					// Get statistics.
-					//HashMap<Ref, ServiceResourceStatistic> statsMap = getStatisticForOsbType(serverName, osbResourceType, references, typeFlag);					
-					HashMap<Ref, ServiceResourceStatistic> statsMap = getStatisticForOsbType(osbResourceType, references, typeFlag);
+					HashMap<Ref, ServiceResourceStatistic> statsMap = getStatisticForOsbType(serverName, osbResourceType, references, typeFlag);					
+					//HashMap<Ref, ServiceResourceStatistic> statsMap = getStatisticForOsbType(osbResourceType, references, typeFlag);
+				
 					return statsMap;
 				} catch (IllegalArgumentException iae) {
 
@@ -582,29 +574,14 @@ else {
 	 */
 	private Ref[] getRefForOsbType(String osbResourceType) {
 
-		Ref[] refs = null;
 		try {
 			switch (osbResourceType) {
 	
 				case MonitorProperties.OSB_PS_TYPE:
-					
-					//return serviceDomainMBean.getMonitoredProxyServiceRefs();
-					refs = serviceDomainMBean.getMonitoredProxyServiceRefs();
-					if(refs != null) {
-						AppLog.getLogger().notice("getRefForOsbType() - Ref[] contains [" + refs.length + "] elements");
-					} else {
-						AppLog.getLogger().notice("getRefForOsbType() - Ref[] is null or empty ...");
-					}
+					return serviceDomainMBean.getMonitoredProxyServiceRefs();
 					
 				case MonitorProperties.OSB_BS_TYPE:
-					//return serviceDomainMBean.getMonitoredBusinessServiceRefs();
-					refs = serviceDomainMBean.getMonitoredBusinessServiceRefs();
-					if(refs != null) {
-						AppLog.getLogger().notice("getRefForOsbType() - Ref[] contains [" + refs.length + "] elements");
-					} else {
-						AppLog.getLogger().notice("getRefForOsbType() - Ref[] is null or empty ...");
-					}
-					return refs;
+					return serviceDomainMBean.getMonitoredBusinessServiceRefs();
 							
 				default:
 					AppLog.getLogger().error("Wrong osbResourceType [" + osbResourceType + "] - Must be [" + MonitorProperties.OSB_PS_TYPE + "] or [" + MonitorProperties.OSB_BS_TYPE + "]");
@@ -625,35 +602,27 @@ else {
 	 * @return
 	 * @throws Exception
 	 */
-	//private HashMap<Ref, ServiceResourceStatistic> getStatisticForOsbType(String serverName, String osbResourceType, Ref[] serviceRefs, int typeFlag) throws Exception {
-	private HashMap<Ref, ServiceResourceStatistic> getStatisticForOsbType(String osbResourceType, Ref[] serviceRefs, int typeFlag) throws Exception {
+	private HashMap<Ref, ServiceResourceStatistic> getStatisticForOsbType(String serverName, String osbResourceType, Ref[] serviceRefs, int typeFlag) throws Exception {
+	//private HashMap<Ref, ServiceResourceStatistic> getStatisticForOsbType(String osbResourceType, Ref[] serviceRefs, int typeFlag) throws Exception {
 
+		// If the serverName is set, the statistic will be retrieve for it.
+		// If the serverName is null, then the statistic will be retrieved for the cluster
+		
 		if (serviceRefs != null && serviceRefs.length > 0) {
-
+					
 			switch (osbResourceType) {
 
-			case MonitorProperties.OSB_PS_TYPE:
-				
-				return serviceDomainMBean.getProxyServiceStatistics(serviceRefs, typeFlag, null);
-				//return serviceDomainMBean.getProxyServiceStatistics(serviceRefs, typeFlag, serverName);
-				
-/*
-HashMap<Ref, ServiceResourceStatistic> statistics = serviceDomainMBean.getProxyServiceStatistics(serviceRefs, typeFlag, serverName);
-if(statistics != null) {
-	if(serverName != null) AppLog.getLogger().notice("statistics is not null and contains [" + statistics.size() + "] elements for server [" + serverName + "]");
-	else AppLog.getLogger().notice("statistics is not null and contains [" + statistics.size() + "] elements");
-} else {
-	if(serverName != null) AppLog.getLogger().error("statistics is null for server [" + serverName + "]");
-	else AppLog.getLogger().error("statistics is null");
-}
-*/
+				case MonitorProperties.OSB_PS_TYPE:
+					
+					return serviceDomainMBean.getProxyServiceStatistics(serviceRefs, typeFlag, serverName);
+					//return serviceDomainMBean.getProxyServiceStatistics(serviceRefs, typeFlag, null);
+					
+				case MonitorProperties.OSB_BS_TYPE:
+					return serviceDomainMBean.getBusinessServiceStatistics(serviceRefs, typeFlag, serverName);
+					//return serviceDomainMBean.getBusinessServiceStatistics(serviceRefs, typeFlag, null);
 
-			case MonitorProperties.OSB_BS_TYPE:
-				//return serviceDomainMBean.getBusinessServiceStatistics(serviceRefs, typeFlag, serverName);
-				return serviceDomainMBean.getBusinessServiceStatistics(serviceRefs, typeFlag, null);
-
-			default:
-				return null;
+				default:
+					return null;
 			}
 		}
 		return null;
@@ -893,141 +862,6 @@ if(statistics != null) {
 		}
 		return globalStatistics;
 	}
-	
-	/**
-	 * 
-	 * @param statsMap
-	 * @return
-	 */
-	/*
-	private Map<String, Map<String, Map<String, String>>> processStatistics(HashMap<Ref, ServiceResourceStatistic> statsMap) {
-	*/	
-		/*
-		 * MAP object containing all the informations
-		 * 
-		 * The KEY is the NAME of the SERVICE (name of PS or BS for example)
-		 * The CONTENT is a MAP object having :
-		 *    The KEY is the NAME of the ResourceStatistic object
-		 *    The CONTENT is a MAP object having :
-		 *        The KEY is the NAME of the StatisticValue object
-		 *        The CONTENT is the VALUE of the StatisticValue object
-		*/
-	/*
-		Map<String, Map<String, Map<String, String>>> globalStatistics = new LinkedHashMap<>();
-				
-		// Check input parameters
-		if (statsMap == null) {
-			return globalStatistics;
-		}
-		if (statsMap.size() == 0) {
-			return globalStatistics;
-		}
-
-		Set<Map.Entry<Ref, ServiceResourceStatistic>> set = statsMap.entrySet();
-		for (Map.Entry<Ref, ServiceResourceStatistic> mapEntry : set) {
-
-			//String serviceName = mapEntry.getKey().getGlobalName();
-			String serviceName = mapEntry.getKey().getLocalName();
-			ServiceResourceStatistic serviceStats = mapEntry.getValue();
-			ResourceStatistic[] resStatsArray = null;
-			
-			try {
-				// Get all the statistics
-				resStatsArray = serviceStats.getAllResourceStatistics();
-			} catch (MonitoringNotEnabledException mnee) {
-
-				// Statistics not available
-				AppLog.getLogger().error("--------------------------------------------------------------------");
-				AppLog.getLogger().error("Monitoring is not enabled for the service [" + serviceName + "]");
-				AppLog.getLogger().error("--------------------------------------------------------------------");
-				continue;
-			} catch (InvalidServiceRefException isre) {
-
-				// Invalid service
-				AppLog.getLogger().error("---------------------------------------------------------------");
-				AppLog.getLogger().error("InvalidRef. Maybe the service  [" + serviceName + "] is deleted");
-				AppLog.getLogger().error("---------------------------------------------------------------");
-				continue;
-			} catch (MonitoringException me) {
-
-				// Statistics not available
-				AppLog.getLogger().error("--------------------------------------------------------------------");
-				AppLog.getLogger().error("Failed to get statistics for the service  [" + serviceName + "]");
-				AppLog.getLogger().error("Details: " + me.getMessage());
-				AppLog.getLogger().error("--------------------------------------------------------------------");
-				continue;
-			}
-			
-			Map<String, Map<String, String>> services = new LinkedHashMap<>();
-			
-			// ----------------------------------------------------------------
-			// Process statistics
-			for (ResourceStatistic resStats : resStatsArray) {
-
-				String resourceStatisticName = resStats.getName();
-				Map<String, String> statisticValues = new LinkedHashMap<>();
-				
-				// Now get and print statistics for this resource
-				StatisticValue[] statValues = resStats.getStatistics();
-				for (StatisticValue value : statValues) {
-
-					StatisticType currentStatisticType = value.getType();
-					String currentStatisticValueName = value.getName();
-					if (!isValidStatisticNameForType(currentStatisticType.toString(), currentStatisticValueName)) {
-						AppLog.getLogger().warning("The StatisticValue [" + currentStatisticValueName + "] is [UNKNOWN] for the type: [" + currentStatisticType + "]");
-					}
-					
-					// Determine statistics type
-					if (currentStatisticType == StatisticType.INTERVAL) {
-							
-//AppLog.getLogger().notice("processStatistics - The value [" + currentStatisticValueName + " is [INTERVAL]");
-
-						StatisticValue.IntervalStatistic is = (StatisticValue.IntervalStatistic) value;
-					
-						// Add the elements to the list
-						statisticValues.put(is.getName() + MonitorProperties.OSB_STATISTIC_TYPE_INTERVAL_PROPERTY_COUNT, new Long(is.getCount()).toString());
-						statisticValues.put(is.getName() + MonitorProperties.OSB_STATISTIC_TYPE_INTERVAL_PROPERTY_MIN, new Long(is.getMin()).toString());
-						statisticValues.put(is.getName() + MonitorProperties.OSB_STATISTIC_TYPE_INTERVAL_PROPERTY_MAX, new Long(is.getMax()).toString());
-						statisticValues.put(is.getName() + MonitorProperties.OSB_STATISTIC_TYPE_INTERVAL_PROPERTY_AVERAGE, new Long(is.getAverage()).toString());
-						statisticValues.put(is.getName() + MonitorProperties.OSB_STATISTIC_TYPE_INTERVAL_PROPERTY_SUM, new Double(is.getSum()).toString());
-						continue;
-						
-					} else if (value.getType() == StatisticType.COUNT) {
-
-//AppLog.getLogger().notice("processStatistics - The value [" + currentStatisticValueName + " is [COUNT]");
-						
-						StatisticValue.CountStatistic cs = (StatisticValue.CountStatistic) value;
-						
-						// Add the elements to the list
-						statisticValues.put(cs.getName().toString() + MonitorProperties.OSB_STATISTIC_TYPE_COUNT_PROPERTY_COUNT, new Long(cs.getCount()).toString());
-						continue;
-	
-					} else if (value.getType() == StatisticType.STATUS) {
-
-//AppLog.getLogger().notice("processStatistics - The value [" + currentStatisticValueName + " is [STATUS]");
-						
-						// Is used in 12.1.3
-						// Doesn't seem to be used in 10.3.6 ...						
-						StatisticValue.StatusStatistic ss = (StatisticValue.StatusStatistic) value;
-						
-						// Add the elements to the list
-						statisticValues.put(ss.getName() + MonitorProperties.OSB_STATISTIC_TYPE_STATUS_PROPERTY_INITIAL, new Integer(ss.getInitialStatus()).toString());
-						statisticValues.put(ss.getName() + MonitorProperties.OSB_STATISTIC_TYPE_STATUS_PROPERTY_CURRENT, new Integer(ss.getCurrentStatus()).toString());
-						continue;
-					}
-				}
-				
-				// Add the StatisticValue (NAME as KEY and VALUE as CONTENT)
-				services.put(resourceStatisticName, statisticValues);
-			}
-			
-			// Add the service informations
-			globalStatistics.put(serviceName, services);
-			// ----------------------------------------------------------------
-		}
-		return globalStatistics;
-	}
-	*/
 
 	/**
 	 * 
@@ -1291,24 +1125,14 @@ if(statistics != null) {
 		if(statistics != null) {
 			
 			try {
-				
-				/*
-				Map<String, Map<String, String>> resourceStatistics = statistics.get(serviceName);				
-				Map<String, String> statisticValues = resourceStatistics.get(resourceStatisticName);				
-				String statisticValue = statisticValues.get(statisticName);
-				return statisticValue;
-				*/
-				
 				return statistics.get(serviceName).get(resourceStatisticName).get(statisticName);
-				
 			} catch (Exception ex) {
-				
-				AppLog.getLogger().notice("Not possible to get the value of the statistic [" + serviceName + "/" + resourceStatisticName + "/" + statisticName + "] - Message is [" + ex.getMessage() + "]");
+				//AppLog.getLogger().warning("Not possible to get the value of the statistic [-> " + serviceName + "/" + resourceStatisticName + "/" + statisticName + "]");
 			}
 		} else {
 			AppLog.getLogger().error("Not possible to extract statictic value - The statistic object is null");
 		}
-		return -1;
+		return 0;
 	}
 	
 	/**
@@ -1324,23 +1148,13 @@ if(statistics != null) {
 		if(statistics != null) {
 			
 			try {
-					
-				/*
-				Map<String, Map<String, String>> resourceStatistics = statistics.get(serviceName);
-				Map<String, String> statisticValues = resourceStatistics.get(resourceStatisticName);
-				String statisticValue = statisticValues.get(statisticName);
-				return statisticValue;
-				*/
-				
 				return statistics.get(serviceName).get(resourceStatisticName).get(statisticName);
-				
 			} catch (Exception ex) {
-				
-				AppLog.getLogger().notice("Not possible to get the value of the statistic [" + serviceName + "/" + resourceStatisticName + "/" + statisticName + "] - Message is [" + ex.getMessage() + "]");
+				//AppLog.getLogger().error("Not possible to get the value of the statistic [" + serviceName + "/" + resourceStatisticName + "/" + statisticName + "]");
 			}
 		} else {
 			AppLog.getLogger().error("Not possible to extract statictic value - The statistic object is null");
 		}
-		return -1;
+		return 0;
 	}
 }
