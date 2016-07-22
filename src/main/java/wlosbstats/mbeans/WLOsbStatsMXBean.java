@@ -26,27 +26,17 @@ import java.util.Set;
  */
 public interface WLOsbStatsMXBean {
 
-	// Even if Set is used, it will be returned as String[] in client side
-	//public String[] getServiceList(String osbResourceType);
-	//public Set<String> getServiceListSet(String osbResourceType);
-	
-	// Problem to read the datas in the client (TabularData : http://docs.oracle.com/javase/6/docs/api/javax/management/MXBean.html)
+	// Statistics are returned to the client as TabularData
 	public Map<String, Map<String, Map<String, Double>>> getServiceStatistics(String serverName, String osbResourceType, String resourceType, String statisticType);
 	public Map<String, Map<String, Map<String, Double>>> getServiceStatistics(String serverName, String osbResourceType, String resourceType);
-	//	public Map<String, Map<String, Map<String, Double>>> getServiceStatistics(String osbResourceType, String resourceType, String statisticType);
-	//	public Map<String, Map<String, Map<String, Double>>> getServiceStatistics(String osbResourceType, String resourceType);
+	//public Map<String, Map<String, Map<String, Double>>> getServiceStatistics(String osbResourceType, String resourceType, String statisticType);
+	//public Map<String, Map<String, Map<String, Double>>> getServiceStatistics(String osbResourceType, String resourceType);
 	
+	// Statistics are internal to the MBean
 	public void collectServiceStatistics(String serverName, String osbResourceType, String resourceType, String statisticType);
 	public void collectServiceStatistics(String serverName, String osbResourceType, String resourceType);
-
 	//public void collectServiceStatistics(String osbResourceType, String resourceType, String statisticType);
 	//public void collectServiceStatistics(String osbResourceType, String resourceType);
-		
-	// Was in DH but it seems the MBean is updating the HashMap in TabularData (see TabularDataSupport) object ...
-	//public Set<String> getOsbServiceList(Map<String, Map<String, Map<String, Double>>> statistics);
-	//public Set<String> getOsbResourceStatisticList(Map<String, Map<String, Map<String, Double>>> statistics, String serviceName);
-	//public Set<String> getOsbStatisticList(Map<String, Map<String, Map<String, Double>>> statistics, String serviceName, String resourceStatisticName);
-	//public double getValueForOsbStatistic(Map<String, Map<String, Map<String, Double>>> statistics, String serviceName, String resourceStatisticName, String statisticName);
 	
 	public Set<String> getOsbServiceList();
 	public Set<String> getOsbResourceStatisticList(String serviceName);

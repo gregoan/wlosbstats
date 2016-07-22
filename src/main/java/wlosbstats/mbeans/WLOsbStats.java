@@ -204,10 +204,10 @@ public class WLOsbStats implements WLOsbStatsMXBean, MBeanRegistration {
 		
 		ObjectName serverRuntime = (ObjectName)getConn().getAttribute(serverRuntimeServiceMBean, SERVER_RUNTIME);
 		if(serverRuntime != null) {
-			AppAppLog.getLogger().getLogger().notice("Found the ServerRuntime");
+			AppLog.getLogger().notice("Found the ServerRuntime");
 			return serverRuntime;
 		} else {
-			AppAppLog.getLogger().getLogger().error("Didn't find the ServerRuntime ...");
+			AppLog.getLogger().error("Didn't find the ServerRuntime ...");
 			return null;
 		}
 	}
@@ -250,7 +250,7 @@ public class WLOsbStats implements WLOsbStatsMXBean, MBeanRegistration {
 	 */
 	public WLOsbStats() {
 				
-		// Check if the MBean is instantiated each time of kept in memory for better performance
+		// Check if the MBean is instantiated each time or kept in memory for better performance
 		// -> Need to know how the data should be retrieved
 		if(!initServiceDomainMBean()) {
 			//throw new IllegalStateException ("Unable to create WLOsbStats object");
@@ -301,56 +301,6 @@ public class WLOsbStats implements WLOsbStatsMXBean, MBeanRegistration {
 	public String getMBeanVersion() {
 		return WL_OSB_APP_VERSION;
 	}
-	
-	/**
-	 * 
-	 * @param osbResourceType
-	 * @return
-	 */
-	/*
-	public Set<String> getServiceListSet(String osbResourceType) {
-		
-    	Ref[] references = getRefForOsbType(osbResourceType);
-    	if (references != null && references.length > 0) {
-    		
-    		Set<String> serviceList = new HashSet<String>();
-    		for (int index = 0; index < references.length; index ++) {
-    			
-    			Ref reference = references[index];
-    			String serviceName = reference.getLocalName();
-    			serviceList.add(serviceName);
-    			AppLog.getLogger().debug("Element [" + serviceName + "] added to the list of services with the OSB type [" + osbResourceType + "]");
-    		}
-        	return serviceList;
-    	}
-    	return null;
-	}
-	*/
-	
-	/**
-	 * 
-	 * @param osbResourceType
-	 * @return
-	 */
-	/*
-	public String[] getServiceList(String osbResourceType) {
-		
-    	Ref[] references = getRefForOsbType(osbResourceType);
-    	if (references != null && references.length > 0) {
-    		
-    		String[] serviceList = new String[references.length];
-    		for (int index = 0; index < references.length; index ++) {
-    			
-    			Ref reference = references[index];
-    			String serviceName = reference.getLocalName();
-    			serviceList[index] = serviceName;
-    			AppLog.getLogger().debug("Element [" + serviceName + "] added to the list of services with the OSB type [" + osbResourceType + "]");
-    		}
-        	return serviceList;
-    	}
-    	return null;
-	}
-	*/
 	
 	/**
 	 * 
@@ -862,121 +812,6 @@ public class WLOsbStats implements WLOsbStatsMXBean, MBeanRegistration {
 		}
 		return globalStatistics;
 	}
-
-	/**
-	 * 
-	 * @param statsMap
-	 * @throws Exception
-	 */
-	/*
-	private void printStatistics(HashMap<Ref, ServiceResourceStatistic> statsMap) {
-
-		if (statsMap == null) {
-			AppLog.getLogger().warning("------------------------------------------------------");
-			AppLog.getLogger().warning("ServiceResourceStatistics is null... Nothing to report");
-			AppLog.getLogger().warning("------------------------------------------------------");
-			return;
-		}
-		if (statsMap.size() == 0) {
-			AppLog.getLogger().warning("-------------------------------------------------------");
-			AppLog.getLogger().warning("ServiceResourceStatistics is empty... Nothing to report");
-			AppLog.getLogger().warning("------------------------------------------------------");
-			return;
-		}
-
-		Set<Map.Entry<Ref, ServiceResourceStatistic>> set = statsMap.entrySet();
-
-		// Print statistical information of each service
-		for (Map.Entry<Ref, ServiceResourceStatistic> mapEntry : set) {
-
-			AppLog.getLogger().notice("");
-			AppLog.getLogger().notice("----- Printing statistics for service [" + mapEntry.getKey().getLocalName() + "] -----");
-
-			ServiceResourceStatistic serviceStats = mapEntry.getValue();
-			ResourceStatistic[] resStatsArray = null;
-			
-			try {
-				// Get all the statistics
-				resStatsArray = serviceStats.getAllResourceStatistics();
-			} catch (MonitoringNotEnabledException mnee) {
-
-				// Statistics not available
-				AppLog.getLogger().error("--------------------------------------------------------------------");
-				AppLog.getLogger().error("Monitoring is not enabled for this service - Please check ...");
-				AppLog.getLogger().error("--------------------------------------------------------------------");
-				continue;
-			} catch (InvalidServiceRefException isre) {
-
-				// Invalid service
-				AppLog.getLogger().error("---------------------------------------------------------------");
-				AppLog.getLogger().error("InvalidRef. Maybe this service is deleted - Please check ...");
-				AppLog.getLogger().error("---------------------------------------------------------------");
-				continue;
-			} catch (MonitoringException me) {
-
-				// Statistics not available
-				AppLog.getLogger().error("--------------------------------------------------------------------");
-				AppLog.getLogger().error("Failed to get statistics for this service...");
-				AppLog.getLogger().error("Details: " + me.getMessage());
-				AppLog.getLogger().error("--------------------------------------------------------------------");
-				continue;
-			}
-
-			// ----------------------------------------------------------------
-			// Print statistics
-			for (ResourceStatistic resStats : resStatsArray) {
-
-				// Print resource information
-				AppLog.getLogger().notice("");
-				AppLog.getLogger().notice("Resource name: [" + resStats.getName() + "] - Resource type: [" + resStats.getResourceType().toString() + "]");
-								
-				// Now get and print statistics for this resource
-				StatisticValue[] statValues = resStats.getStatistics();
-				for (StatisticValue value : statValues) {
-
-					String statisticValueType = value.getType().toString();
-					String statisticValueName = value.getName();
-					if (!isValidStatisticNameForType(statisticValueType, value.getName())) {
-						AppLog.getLogger().notice("The StatisticValue with name: [" + statisticValueName + "] is [UNKNOWN] for the type: [" + statisticValueType + "]");
-					}
-
-					// Determine statistics type
-					if (value.getType() == StatisticType.INTERVAL) {
-
-						StatisticValue.IntervalStatistic is = (StatisticValue.IntervalStatistic) value;
-
-						// Print interval statistics values
-						AppLog.getLogger().notice("    Cnt Value: [" + is.getCount() + "]");
-						AppLog.getLogger().notice("    Min Value: [" + is.getMin() + "]");
-						AppLog.getLogger().notice("    Max Value: [" + is.getMax() + "]");
-						AppLog.getLogger().notice("    Sum Value: [" + is.getSum() + "]");
-						AppLog.getLogger().notice("    Avg Value: [" + is.getAverage() + "]");
-						continue;
-						
-					} else if (value.getType() == StatisticType.COUNT) {
-
-						StatisticValue.CountStatistic cs = (StatisticValue.CountStatistic) value;
-						
-						// Print count statistics value
-						AppLog.getLogger().notice("    Cnt Value: [" + cs.getCount() + "]");
-						continue;
-
-					} else if (value.getType() == StatisticType.STATUS) {
-
-						// Is used in 12.1.3
-						// Doesn't seem to be used in 10.3.6 ...
-						StatisticValue.StatusStatistic ss = (StatisticValue.StatusStatistic) value;
-						
-						// Print count statistics value
-						AppLog.getLogger().notice("    Initial Status: [" + ss.getInitialStatus() + "]");
-						AppLog.getLogger().notice("    Current Status: [" + ss.getCurrentStatus() + "]");
-						continue;
-					}
-				}
-			}
-			// ----------------------------------------------------------------
-		}
-	}*/
 	
 	/**
 	 * 
@@ -1002,7 +837,7 @@ public class WLOsbStats implements WLOsbStatsMXBean, MBeanRegistration {
 					String serviceName = serviceKeys.next();
 					
 					AppLog.getLogger().notice("------------------------------------------------------------------");
-					AppLog.getLogger().notice("Service [" + serviceName + "]");
+					AppLog.getLogger().notice("ServiceName [" + serviceName + "]");
 					AppLog.getLogger().notice("--------------------------------------------");
 					
 					Map<String, Map<String, Double>> services = globalStatistics.get(serviceName);
